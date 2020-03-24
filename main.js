@@ -1,10 +1,8 @@
-console.log('Welcome to 2048!')
-
 let field = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 let numOfMoves = 0;
 let score = 0;
 
-function initiate() {
+function initiateGame() {
     field = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
     numOfMoves = 0;
     score = 0;
@@ -12,7 +10,7 @@ function initiate() {
     updateGrid();
 }
 
-function keyCodetoinput(keyCode) {
+function convertKeyCodeToInput(keyCode) {
     if(keyCode === 38) {
         return 0;
     } else if(keyCode === 40) {
@@ -197,7 +195,7 @@ function updateGrid() {
     } 
 }
 
-function isupdatable() {
+function isUpdatable() {
     for(let r = 0; r < 4; r++) {
         for(let c = 0; c < 3; c++) {
             if(field[r][c] === field[r][c+1]) {
@@ -231,7 +229,7 @@ function checkHealth() {
             if(!field[r][c]) emptyCount++;
         }
     }
-    if(emptyCount === 0 && !isupdatable()) {
+    if(emptyCount === 0 && !isUpdatable()) {
         document.getElementById("grid").style.opacity = "0.2";
         document.getElementById("lose").style.visibility = "visible";
         console.log("YOU LOSE...")
@@ -241,11 +239,11 @@ function checkHealth() {
 }
 
 // Initiation
-initiate();
+initiateGame();
 
 // Controller
 window.onkeyup = function() {
-    let keyboardInput = this.keyCodetoinput(this.event.keyCode);
+    let keyboardInput = this.convertKeyCodeToInput(this.event.keyCode);
     if(this.checkHealth() && keyboardInput !== this.undefined) {
         this.moveAndMerge(keyboardInput);
         this.newNumber();
