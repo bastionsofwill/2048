@@ -1,0 +1,46 @@
+/* Style Here */
+table, tr, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+td {
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 30px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#moves, #score {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: Large;
+}
+
+#win {
+    position: relative;
+    top: -225px;
+    left: 5px;
+    width: 400px;
+    height: auto;
+    font-size: xx-large;
+    color: #ffffff;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+    background-color: #000000;
+    visibility: hidden;
+}
+
+#lose {
+    position: relative;
+    top: -265px;
+    left: 5px;
+    width: 400px;
+    height: auto;
+    font-size: xx-large;
+    color: #ffffff;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+    background-color: #000000;
+    visibility: hidden;
+}
