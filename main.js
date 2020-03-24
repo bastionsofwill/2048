@@ -39,57 +39,86 @@ function newNumber() {
     field[newSquare[0]][newSquare[1]] = isFour ? 4 : 2;
 }
 
-function compress(input, rowOrColumn) {
+function compress(input) {
     switch(input) {
         case 0:
-            for(let i = 0; i < 3; i++) {
-                if(!field[i][rowOrColumn]) {
-                    for(let j = i; j < 3; j++) {
-                        field[j][rowOrColumn] = field[j+1][rowOrColumn];
+            for(let j = 0; j < 4; j++) {
+                let initZeroFlag = false;
+                let initZero = -1;
+                for(let i = 0; i < 4; i++) {
+                    if(!field[i][j] && !initZeroFlag) {
+                        initZeroFlag = true;
+                        initZero = i;
+                    } else if(field[i][j] && initZeroFlag) {
+                        initZeroFlag = false;
+                        field[initZero][j] = field[i][j];
+                        field[i][j] = 0;
+                        i = initZero;
                     }
-                    field[3][rowOrColumn] = 0;   
                 }
             }
             break;
         case 1:
-            for(let i = 3; i > 0; i--) {
-                if(!field[i][rowOrColumn]) {
-                    for(let j = i; j > 0; j--) {
-                        field[j][rowOrColumn] = field[j-1][rowOrColumn];
+            for(let j = 0; j < 4; j++) {
+                let initZeroFlag = false;
+                let initZero = -1;
+                for(let i = 3; i >= 0; i--) {
+                    if(!field[i][j] && !initZeroFlag) {
+                        initZeroFlag = true;
+                        initZero = i;
+                    } else if(field[i][j] && initZeroFlag) {
+                        initZeroFlag = false;
+                        field[initZero][j] = field[i][j];
+                        field[i][j] = 0;
+                        i = initZero;
                     }
-                    field[0][rowOrColumn] = 0;
                 }
             }
             break;
         case 2:
-            for(let i = 0; i < 3; i++) {
-                if(!field[rowOrColumn][i]) {
-                    for(let j = i; j < 3; j++) {
-                        field[rowOrColumn][j] = field[rowOrColumn][j+1];
+            for(let i = 0; i < 4; i++) {
+                let initZeroFlag = false;
+                let initZero = -1;
+                for(let j = 0; j < 4; j++) {
+                    if(!field[i][j] && !initZeroFlag) {
+                        initZeroFlag = true;
+                        initZero = j;
+                    } else if(field[i][j] && initZeroFlag) {
+                        initZeroFlag = false;
+                        field[i][initZero] = field[i][j];
+                        field[i][j] = 0;
+                        j = initZero;
                     }
-                    field[rowOrColumn][3] = 0;   
                 }
             }
             break;
         case 3:
-            for(let i = 3; i > 0; i--) {
-                if(!field[rowOrColumn][i]) {
-                    for(let j = i; j > 0; j--) {
-                        field[rowOrColumn][j] = field[rowOrColumn][j-1];
+            for(let i = 0; i < 4; i++) {
+                let initZeroFlag = false;
+                let initZero = -1;
+                for(let j = 3; j >= 0; j--) {
+                    if(!field[i][j] && !initZeroFlag) {
+                        initZeroFlag = true;
+                        initZero = j;
+                    } else if(field[i][j] && initZeroFlag) {
+                        initZeroFlag = false;
+                        field[i][initZero] = field[i][j];
+                        field[i][j] = 0;
+                        j = initZero;
                     }
-                    field[rowOrColumn][0] = 0;   
                 }
             }
-            break;        
+            break;
     }
+    
 }
 
 function moveAndMerge(input) {
+    compress(input);
     if(input === 0 || input === 1 || input === 2 || input === 3) numOfMoves++;
     // Up or Down : Column-wise operation
     if(input === 0 || input === 1) {
         for(let c = 0; c < 4; c++) {
-            compress(input, c);
             if(field[3*input][c] === field[input + 1][c]) {
                 field[3*input][c] += field[input + 1][c];
                 score += field[3*input][c];
@@ -119,7 +148,6 @@ function moveAndMerge(input) {
             let new3 = field[-1*input + 2][c] === field[-3*input + 3][c] ? 0 : field[-3*input + 3][c];
             field[-1*input + 2][c] = new2;
             field[-3*input + 3][c] = new3;
-            compress(input, c);
         }
     }
 
@@ -212,7 +240,9 @@ function checkHealth() {
     return true;
 }
 
+// Initiation
 initiate();
+
 // Controller
 window.onkeyup = function() {
     let keyboardInput = this.keyCodetoinput(this.event.keyCode);
