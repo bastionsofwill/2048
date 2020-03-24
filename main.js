@@ -4,6 +4,14 @@ let field = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 let numOfMoves = 0;
 let score = 0;
 
+function initiate() {
+    field = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    numOfMoves = 0;
+    score = 0;
+    newNumber();
+    updateGrid();
+}
+
 function keyCodetoinput(keyCode) {
     if(keyCode === 38) {
         return 0;
@@ -77,14 +85,19 @@ function compress(input, rowOrColumn) {
 }
 
 function moveAndMerge(input) {
-    numOfMoves++;
+    if(input === 0 || input === 1 || input === 2 || input === 3) numOfMoves++;
     // Up or Down : Column-wise operation
     if(input === 0 || input === 1) {
         for(let c = 0; c < 4; c++) {
             compress(input, c);
             if(field[3*input][c] === field[input + 1][c]) {
                 field[3*input][c] += field[input + 1][c];
-                let new1 = field[-1*input + 2][c] === field[-3*input + 3][c] ? field[-1*input + 2][c] + field[-3*input + 3][c] : field[-1*input + 2][c];
+                score += field[3*input][c];
+                let new1 = 0;
+                if(field[-1*input + 2][c] === field[-3*input + 3][c]) {
+                    new1 = field[-1*input + 2][c] + field[-3*input + 3][c];
+                    score += new1;
+                } else new1 = field[-1*input + 2][c];
                 let new2 = field[-1*input + 2][c] === field[-3*input + 3][c] ? 0 : field[-3*input + 3][c];
                 field[input + 1][c] = new1;
                 field[-1*input + 2][c] = new2;
@@ -93,11 +106,16 @@ function moveAndMerge(input) {
             }
             if(field[input + 1][c] === field[-1*input + 2][c]) {
                 field[input + 1][c] += field[-1*input + 2][c];
+                score += field[input + 1][c];
                 field[-1*input + 2][c] = field[-3*input + 3][c];
                 field[-3*input + 3][c] = 0;
                 continue;
             }
-            let new2 = field[-1*input + 2][c] === field[-3*input + 3][c] ? field[-1*input + 2][c] + field[-3*input + 3][c] : field[-1*input + 2][c];
+            let new2 = 0;
+            if(field[-1*input + 2][c] === field[-3*input + 3][c]) {
+                new2 = field[-1*input + 2][c] + field[-3*input + 3][c];
+                score += new2;
+            } else new2 = field[-1*input + 2][c];
             let new3 = field[-1*input + 2][c] === field[-3*input + 3][c] ? 0 : field[-3*input + 3][c];
             field[-1*input + 2][c] = new2;
             field[-3*input + 3][c] = new3;
@@ -111,7 +129,11 @@ function moveAndMerge(input) {
             compress(input, r);
             if(field[r][3*input - 6] === field[r][input - 1]) {
                 field[r][3*input - 6] += field[r][input - 1];
-                let new1 = field[r][-1*input + 4] === field[r][-3*input + 9] ? field[r][-1*input + 4] + field[r][-3*input + 9] : field[r][-1*input + 4];
+                score += field[r][3*input - 6];
+                if(field[r][-1*input + 4] === field[r][-3*input + 9]) {
+                    new1 = field[r][-1*input + 4] + field[r][-3*input + 9];
+                    score += new1;
+                } else new1 = field[r][-1*input + 4];
                 let new2 = field[r][-1*input + 4] === field[r][-3*input + 9] ? 0 : field[r][-3*input + 9];
                 field[r][input - 1] = new1;
                 field[r][-1*input + 4] = new2;
@@ -120,11 +142,16 @@ function moveAndMerge(input) {
             }
             if(field[r][input - 1] === field[r][-1*input + 4]) {
                 field[r][input - 1] += field[r][-1*input + 4];
+                score += field[r][input - 1];
                 field[r][-1*input + 4] = field[r][-3*input + 9];
                 field[r][-3*input + 9] = 0;
                 continue;
             }
-            let new2 = field[r][-1*input + 4] === field[r][-3*input + 9] ? field[r][-1*input + 4] + field[r][-3*input + 9] : field[r][-1*input + 4];
+            let new2 = 0;
+            if(field[r][-1*input + 4] === field[r][-3*input + 9]) {
+                new2 = field[r][-1*input + 4] + field[r][-3*input + 9];
+                score += new2;
+            } else new2 = field[r][-1*input + 4];
             let new3 = field[r][-1*input + 4] === field[r][-3*input + 9] ? 0 : field[r][-3*input + 9];
             field[r][-1*input + 4] = new2;
             field[r][-3*input + 9] = new3;
@@ -185,14 +212,12 @@ function checkHealth() {
     return true;
 }
 
-// Initiation
-newNumber();
-updateGrid();
-
+initiate();
 // Controller
 window.onkeyup = function() {
-    if(this.checkHealth()) {
-        this.moveAndMerge(this.keyCodetoinput(this.event.keyCode));
+    let keyboardInput = this.keyCodetoinput(this.event.keyCode);
+    if(this.checkHealth() && keyboardInput !== this.undefined) {
+        this.moveAndMerge(keyboardInput);
         this.newNumber();
         document.getElementById("moves").innerHTML = "Moves: " + numOfMoves;
         document.getElementById("score").innerHTML = "Score: " + score;
