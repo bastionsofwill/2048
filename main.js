@@ -1,4 +1,5 @@
 let field = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+let snapShot = [];
 let numOfMoves = 0;
 let score = 0;
 
@@ -116,7 +117,7 @@ function compress(input) {
 }
 
 function moveAndMerge(input) {
-    let snapShot = field.slice();
+    snapShot = JSON.parse(JSON.stringify(field));
     console.log(snapShot);
     compress(input);
     // Up or Down : Column-wise operation
