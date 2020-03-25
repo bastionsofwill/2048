@@ -6,7 +6,7 @@ function initiateGame() {
     field = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
     numOfMoves = 0;
     score = 0;
-    newNumber();
+    newNumber(true);
     updateGrid();
 }
 
@@ -21,28 +21,32 @@ function convertKeyCodeToInput(keyCode) {
         return 3;
     } else {
         console.log("invalid keyCode: " + keyCode);
-        return;
+        return -1;
     }
 }
 
-function newNumber() {
-    let emptySquares = [];
-    let isFour = (Math.random() > 0.9);
+function newNumber(flag) {
+    if(flag) {
+        let emptySquares = [];
+        let isFour = (Math.random() > 0.9);
 
-    for(let r = 0; r < 4; r++)
-        for(let c = 0; c < 4; c++)
-            if(!field[r][c]) emptySquares.push([r, c]);
-    
-    let newSquare = emptySquares[Math.floor(emptySquares.length*Math.random())];
-    field[newSquare[0]][newSquare[1]] = isFour ? 4 : 2;
+        for(let r = 0; r < 4; r++)
+            for(let c = 0; c < 4; c++)
+                if(!field[r][c]) emptySquares.push([r, c]);
+        
+        let newSquare = emptySquares[Math.floor(emptySquares.length*Math.random())];
+        field[newSquare[0]][newSquare[1]] = isFour ? 4 : 2;
+    }
 }
 
 function compress(input) {
+    let initZero;
+    let initZeroFlag;
     switch(input) {
         case 0:
             for(let j = 0; j < 4; j++) {
-                let initZeroFlag = false;
-                let initZero = -1;
+                initZeroFlag = false;
+                initZero = -1;
                 for(let i = 0; i < 4; i++) {
                     if(!field[i][j] && !initZeroFlag) {
                         initZeroFlag = true;
@@ -58,8 +62,8 @@ function compress(input) {
             break;
         case 1:
             for(let j = 0; j < 4; j++) {
-                let initZeroFlag = false;
-                let initZero = -1;
+                initZeroFlag = false;
+                initZero = -1;
                 for(let i = 3; i >= 0; i--) {
                     if(!field[i][j] && !initZeroFlag) {
                         initZeroFlag = true;
@@ -75,8 +79,8 @@ function compress(input) {
             break;
         case 2:
             for(let i = 0; i < 4; i++) {
-                let initZeroFlag = false;
-                let initZero = -1;
+                initZeroFlag = false;
+                initZero = -1;
                 for(let j = 0; j < 4; j++) {
                     if(!field[i][j] && !initZeroFlag) {
                         initZeroFlag = true;
@@ -92,8 +96,8 @@ function compress(input) {
             break;
         case 3:
             for(let i = 0; i < 4; i++) {
-                let initZeroFlag = false;
-                let initZero = -1;
+                initZeroFlag = false;
+                initZero = -1;
                 for(let j = 3; j >= 0; j--) {
                     if(!field[i][j] && !initZeroFlag) {
                         initZeroFlag = true;
@@ -112,8 +116,9 @@ function compress(input) {
 }
 
 function moveAndMerge(input) {
+    let snapShot = field.slice();
+    console.log(snapShot);
     compress(input);
-    if(input === 0 || input === 1 || input === 2 || input === 3) numOfMoves++;
     // Up or Down : Column-wise operation
     if(input === 0 || input === 1) {
         for(let c = 0; c < 4; c++) {
@@ -184,7 +189,15 @@ function moveAndMerge(input) {
             compress(input, r);
         }
     }
-    else console.log(`Invalid input: ${input}`);
+
+    if(JSON.stringify(snapShot) !== JSON.stringify(field)) {
+        numOfMoves++;
+        return true;
+    } else {
+        console.log(JSON.stringify(snapShot));
+        console.log(JSON.stringify(field));
+    }
+    return false;
 }
 
 function updateGrid() {
@@ -238,15 +251,18 @@ function checkHealth() {
     return true;
 }
 
+function isChanged(input) {
+
+}
+
 // Initiation
 initiateGame();
 
 // Controller
 window.onkeyup = function() {
     let keyboardInput = this.convertKeyCodeToInput(this.event.keyCode);
-    if(this.checkHealth() && keyboardInput !== this.undefined) {
-        this.moveAndMerge(keyboardInput);
-        this.newNumber();
+    if(this.checkHealth() && keyboardInput !== -1) {
+        this.newNumber(this.moveAndMerge(keyboardInput));
         document.getElementById("moves").innerHTML = "Moves: " + numOfMoves;
         document.getElementById("score").innerHTML = "Score: " + score;
         updateGrid();
