@@ -118,7 +118,6 @@ function compress(input) {
 
 function moveAndMerge(input) {
     snapShot = JSON.parse(JSON.stringify(field));
-    console.log(snapShot);
     compress(input);
     // Up or Down : Column-wise operation
     if(input === 0 || input === 1) {
