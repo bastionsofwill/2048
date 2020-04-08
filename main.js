@@ -259,7 +259,7 @@ function isChanged(input) {
 initiateGame();
 
 // Controller
-window.onkeyup = function() {
+window.onkeyup = () => {
     let keyboardInput = this.convertKeyCodeToInput(this.event.keyCode);
     if(this.checkHealth() && keyboardInput !== -1) {
         this.newNumber(this.moveAndMerge(keyboardInput));
