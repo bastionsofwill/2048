@@ -1,6 +1,5 @@
-# 2048 and More
-
-2048 and More is a toy project to study javascript and related tech stack.
+# 2048
+2048 is a toy project to study javascript and related tech stack.
 
 ## Description
 
