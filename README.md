@@ -3,6 +3,10 @@
 
 ## Description
 
+GitHub Pages URL: https://bastions-of-will.github.io/2048
+
+OR
+
 Clone this repository and run HTML using your favorite browser.
 
 ```bash
