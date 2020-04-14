@@ -31,7 +31,7 @@ td {
     visibility: hidden;
 }
 
-#lose {
+#gameover {
     position: relative;
     top: -265px;
     left: 5px;

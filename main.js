@@ -244,7 +244,7 @@ function checkHealth() {
     }
     if(emptyCount === 0 && !isUpdatable()) {
         document.getElementById("grid").style.opacity = "0.2";
-        document.getElementById("lose").style.visibility = "visible";
+        document.getElementById("gameover").style.visibility = "visible";
         console.log("YOU LOSE...")
         return false;
     }
