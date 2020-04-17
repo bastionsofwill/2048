@@ -1,8 +1,11 @@
-# 2048 and More
-
-2048 and More is a toy project to study javascript and related tech stack.
+# 2048
+2048 is a toy project to study javascript and related tech stack.
 
 ## Description
+
+GitHub Pages URL: https://bastions-of-will.github.io/2048
+
+OR
 
 Clone this repository and run HTML using your favorite browser.
 
