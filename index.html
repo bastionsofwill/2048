@@ -37,8 +37,18 @@
             <td id ="3x3"></td>
         </tr>
     </table>
-    <section id="win">YOU WIN!!</section>
-    <section id="gameover">GAME OVER</section>
+    <section id="win">
+        You win!
+        <br>
+        <button id="continue" onclick="continueGame();">Continue</button>
+        <button id="tryagainWin" onclick ="resetGame();">Try again</button>
+    </section>
+    <section id="gameover">
+        Game over!
+        <br>
+        <button id="tryagainGameover" onclick="resetGame();">Try again</button>
+    </section>
+    
     <script src="test.js"></script>
 </body>
 </html>
