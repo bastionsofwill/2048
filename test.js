@@ -1,0 +1,163 @@
+var i, j, dir, randomIndex, initZeroFlag, initZero;
+var newSquare = [];
+var equals = [];
+var tempRow = [];
+var tempBoard = [];
+var newBoard = [];
+
+const State = {
+    PLAYING: 0,
+    GAMEOVER: 1,
+    WIN: 2,
+    INFINITE: 3
+}
+
+let game = {
+    gameBoard: [],
+    emptySquares: [],
+    numOfMoves: 0,
+    score: 0,
+    gameState: null,
+    createNewNumber() {
+        this.emptySquares = [];
+        for(i = 0; i < 4; i++) {
+            for(j = 0; j < 4; j++) {
+                if(!this.gameBoard[i][j]) this.emptySquares.push({x: i, y: j});
+            }
+        }
+        randomIndex = Math.floor(Math.random()*this.emptySquares.length);
+        newSquare = this.emptySquares[randomIndex];
+        this.gameBoard[newSquare.x][newSquare.y] = (Math.random() > 0.9)? 4 : 2;
+        this.emptySquares.splice(randomIndex, 1);
+        console.log("emptysquares: " + this.emptySquares.length);
+    },
+    showCurrentGame() {
+        document.getElementById("moves").innerHTML = "Moves: " + this.numOfMoves;
+        document.getElementById("score").innerHTML = "Score: " + this.score;
+        for(i = 0; i < 4; i++) {
+            for(j = 0; j < 4; j++) {
+                document.getElementById(i+"x"+j).innerHTML = this.gameBoard[i][j] ? this.gameBoard[i][j] : "";
+            }
+        }
+    },
+    initiateGame() {
+        this.gameBoard = [[0, 0, 0, 0], 
+                          [0, 0, 0, 0], 
+                          [0, 0, 0, 0], 
+                          [0, 0, 0, 0]];
+        this.numOfMoves = 0;
+        this.score = 0;
+        this.gameState = State.PLAYING;
+        console.log(this.gameState);
+        this.createNewNumber();
+        this.showCurrentGame();
+        document.getElementById("grid").style.opacity = "1.0";
+        document.getElementById("win").style.visibility = "hidden";
+        document.getElementById("gameover").style.visibility = "hidden";
+    },
+    transpose(board) {
+        return board[0].map((elementOf0thRow, index) => board.map(row => row[index]));
+    },
+    symmetricTransform(board) {
+        return board.map((row, index) => row.map((element, index, arr) => arr[arr.length - 1 - index]));
+    },
+    convertBoard(keycode, board) {
+        tempBoard = JSON.parse(JSON.stringify(board));
+        if(!(keycode%2)) tempBoard = this.transpose(board);
+        if(keycode > 38) tempBoard = this.symmetricTransform(tempBoard);
+        return tempBoard;
+    },
+    recoverBoard(keycode, board) {
+        tempBoard = JSON.parse(JSON.stringify(board));
+        if(keycode > 38) tempBoard = this.symmetricTransform(tempBoard);
+        if(!(keycode%2)) tempBoard = this.transpose(tempBoard);
+        return tempBoard;
+    },
+    pushLeft(board) {
+        // push
+        for(i = 0; i < 4; i++) {
+            initZeroFlag = false;
+            initZero = -1;
+            for(j = 0; j < 4; j++) {
+                if(!board[i][j] && !initZeroFlag) {
+                    initZeroFlag = true;
+                    initZero = j;
+                } else if(board[i][j] && initZeroFlag) {
+                    initZeroFlag = false;
+                    board[i][initZero] = board[i][j];
+                    board[i][j] = 0;
+                    j = initZero;
+                }
+            }
+        }
+        return board;
+    },
+    mergeLeft(board) {
+        for(i = 0; i < 4; i++) {
+            for(j = 0; j < 3; j++) {
+                if(board[i][j] === board[i][j+1]) {
+                    this.score += 2*board[i][j];
+                    board[i][j] *= 2;
+                    board[i][j+1] = 0;
+                }
+            }
+        }
+        return board;
+    },
+    moveLeft(board) {
+        return this.pushLeft(this.mergeLeft(this.pushLeft(board)));
+    },
+    checkSameSquares() {
+        for(i = 0; i < 4; i++) {
+            for(j = 0; j < 3; j++) {
+                if(this.gameBoard[i][j] === this.gameBoard[i][j+1] || this.gameBoard[j][i] === this.gameBoard[j+1][i]) return true;
+            }
+        }
+        return false;
+    },
+    examineState() {
+        for(i = 0; i < 4; i++) {
+            for(j = 0; j < 4; j++) {
+                if(this.gameState === State.PLAYING && this.gameBoard[i][j] === 2048) {
+                    this.gameState = State.WIN;
+                    document.getElementById("grid").style.opacity = "0.2";
+                    document.getElementById("win").style.visibility = "visible";
+                    return;
+                }
+            }
+        }
+        if(!this.emptySquares.length && !this.checkSameSquares()) {
+            this.gameState = State.GAMEOVER;
+            document.getElementById("grid").style.opacity = "0.2";
+            document.getElementById("gameover").style.visibility = "visible";
+        }
+    },
+    setInfiniteMode() {
+        document.getElementById("grid").style.opacity = "1.0";
+        document.getElementById("win").style.visibility = "hidden";
+        this.gameState = State.INFINITE;
+        return;
+    }
+}
+
+function resetGame() {
+    game.initiateGame();
+}
+function continueGame() {
+    game.setInfiniteMode();
+}
+
+game.initiateGame();
+window.onkeyup = () => {
+    if(game.gameState === State.PLAYING || game.gameState === State.INFINITE) {
+        dir = this.event.keyCode;
+        newBoard = game.recoverBoard(dir, game.moveLeft(game.convertBoard(dir, game.gameBoard)));
+        if(JSON.stringify(game.gameBoard) !== JSON.stringify(newBoard)) {
+            game.numOfMoves++;
+            game.gameBoard = newBoard;
+            game.createNewNumber();
+            game.showCurrentGame();
+            game.examineState();
+        }
+    }
+}
