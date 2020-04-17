@@ -10,7 +10,7 @@ OR
 Clone this repository and run HTML using your favorite browser.
 
 ```bash
-git clone https://github.com/bastions-of-will/2048-and-more.git
+git clone https://github.com/bastions-of-will/2048.git
 ```
 
 ## Contributing
