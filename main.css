@@ -28,12 +28,11 @@ td {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
     background-color: #000000;
-    visibility: hidden;
 }
 
 #gameover {
     position: relative;
-    top: -265px;
+    top: -325px;
     left: 5px;
     width: 400px;
     height: auto;
@@ -42,5 +41,4 @@ td {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
     background-color: #000000;
-    visibility: hidden;
 }
