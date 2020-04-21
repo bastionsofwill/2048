@@ -4,6 +4,15 @@ var equals = [];
 var tempRow = [];
 var tempBoard = [];
 var newBoard = [];
+var touchStart, touchEnd;
+var deltaX, deltaY;
+
+const Keycode = {
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40
+}
 
 const State = {
     PLAYING: 0,
@@ -140,18 +149,9 @@ let game = {
     }
 }
 
-function resetGame() {
-    game.initiateGame();
-}
-function continueGame() {
-    game.setInfiniteMode();
-}
-
-game.initiateGame();
-window.onkeyup = () => {
+function playGame(direction) {
     if(game.gameState === State.PLAYING || game.gameState === State.INFINITE) {
-        dir = this.event.keyCode;
-        newBoard = game.recoverBoard(dir, game.moveLeft(game.convertBoard(dir, game.gameBoard)));
+        newBoard = game.recoverBoard(direction, game.moveLeft(game.convertBoard(direction, game.gameBoard)));
         if(JSON.stringify(game.gameBoard) !== JSON.stringify(newBoard)) {
             game.numOfMoves++;
             game.gameBoard = newBoard;
@@ -161,3 +161,41 @@ window.onkeyup = () => {
         }
     }
 }
+function resetGame() {
+    game.initiateGame();
+}
+function continueGame() {
+    game.setInfiniteMode();
+}
+
+game.initiateGame();
+document.getElementById('wholeScreen').onkeyup = () => {
+    event.preventDefault();
+    dir = this.event.keyCode;
+    playGame(dir);
+}
+
+document.getElementById('wholeScreen').addEventListener('touchstart', evt => {
+    evt.preventDefault();
+    touchStart = evt.targetTouches[0];
+})
+
+document.getElementById('wholeScreen').addEventListener('touchmove', evt => {
+    evt.preventDefault();
+    touchEnd = evt.targetTouches[0];
+})
+
+document.getElementById('wholeScreen').addEventListener('touchend', evt => {
+    evt.preventDefault();
+    deltaX = touchEnd.clientX - touchStart.clientX;
+    deltaY = touchEnd.clientY - touchStart.clientY;
+    if(Math.abs(deltaX) > 2* Math.abs(deltaY)) {
+        if(deltaX > 0) dir = Keycode.RIGHT;
+        else dir = Keycode.LEFT;
+    } else if(Math.abs(deltaY) > 2* Math.abs(deltaX)) {
+        if(deltaY > 0) dir = Keycode.DOWN;
+        else dir = Keycode.UP;
+    }
+    console.log(dir);
+    playGame(dir);
+})
