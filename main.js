@@ -38,7 +38,6 @@ let game = {
         newSquare = this.emptySquares[randomIndex];
         this.gameBoard[newSquare.x][newSquare.y] = (Math.random() > 0.9)? 4 : 2;
         this.emptySquares.splice(randomIndex, 1);
-        console.log("emptysquares: " + this.emptySquares.length);
     },
     showCurrentGame() {
         document.getElementById("moves").innerHTML = "Moves: " + this.numOfMoves;
@@ -99,7 +98,7 @@ let game = {
             }
         }
         return board;
-    },
+    },    
     mergeLeft(board) {
         for(i = 0; i < 4; i++) {
             for(j = 0; j < 3; j++) {
@@ -126,7 +125,7 @@ let game = {
     examineState() {
         for(i = 0; i < 4; i++) {
             for(j = 0; j < 4; j++) {
-                if(this.gameState === State.PLAYING && this.gameBoard[i][j] === 2048) {
+                if((this.gameState === State.PLAYING) && (this.gameBoard[i][j] === 2048)) {
                     this.gameState = State.WIN;
                     document.getElementById("grid").style.opacity = "0.2";
                     document.getElementById("win").style.visibility = "visible";
@@ -177,25 +176,24 @@ window.onkeydown = () => {
     event.preventDefault();
 }
 
-document.getElementById('grid').addEventListener('touchstart', evt => {
+let gameGrid = document.getElementById('grid');
+gameGrid.addEventListener('touchstart', evt => {
     evt.preventDefault();
     touchStart = evt.targetTouches[0];
 })
-
-document.getElementById('grid').addEventListener('touchmove', evt => {
+gameGrid.addEventListener('touchmove', evt => {
     evt.preventDefault();
     touchEnd = evt.targetTouches[0];
 })
-
-document.getElementById('grid').addEventListener('touchend', evt => {
+gameGrid.addEventListener('touchend', evt => {
     evt.preventDefault();
     dir = undefined;
     deltaX = touchEnd.clientX - touchStart.clientX;
     deltaY = touchEnd.clientY - touchStart.clientY;
-    if(Math.abs(deltaX) > 2* Math.abs(deltaY)) {
+    if(Math.abs(deltaX) > 2*Math.abs(deltaY)) {
         if(deltaX > 0) dir = Keycode.RIGHT;
         else dir = Keycode.LEFT;
-    } else if(Math.abs(deltaY) > 2* Math.abs(deltaX)) {
+    } else if(Math.abs(deltaY) > 2*Math.abs(deltaX)) {
         if(deltaY > 0) dir = Keycode.DOWN;
         else dir = Keycode.UP;
     }
