@@ -177,17 +177,17 @@ window.onkeydown = () => {
     event.preventDefault();
 }
 
-document.getElementById('contentWrapper').addEventListener('touchstart', evt => {
+document.getElementById('grid').addEventListener('touchstart', evt => {
     evt.preventDefault();
     touchStart = evt.targetTouches[0];
 })
 
-document.getElementById('contentWrapper').addEventListener('touchmove', evt => {
+document.getElementById('grid').addEventListener('touchmove', evt => {
     evt.preventDefault();
     touchEnd = evt.targetTouches[0];
 })
 
-document.getElementById('contentWrapper').addEventListener('touchend', evt => {
+document.getElementById('grid').addEventListener('touchend', evt => {
     evt.preventDefault();
     dir = undefined;
     deltaX = touchEnd.clientX - touchStart.clientX;
