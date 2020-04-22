@@ -57,7 +57,6 @@ let game = {
         this.numOfMoves = 0;
         this.score = 0;
         this.gameState = State.PLAYING;
-        console.log(this.gameState);
         this.createNewNumber();
         this.showCurrentGame();
         document.getElementById("grid").style.opacity = "1.0";
@@ -169,24 +168,28 @@ function continueGame() {
 }
 
 game.initiateGame();
-document.getElementById('wholeScreen').onkeyup = () => {
-    event.preventDefault();
-    dir = this.event.keyCode;
+window.onkeyup = evt => {
+    evt.preventDefault();
+    dir = evt.keyCode;
     playGame(dir);
 }
+window.onkeydown = () => {
+    event.preventDefault();
+}
 
-document.getElementById('wholeScreen').addEventListener('touchstart', evt => {
+document.getElementById('contentWrapper').addEventListener('touchstart', evt => {
     evt.preventDefault();
     touchStart = evt.targetTouches[0];
 })
 
-document.getElementById('wholeScreen').addEventListener('touchmove', evt => {
+document.getElementById('contentWrapper').addEventListener('touchmove', evt => {
     evt.preventDefault();
     touchEnd = evt.targetTouches[0];
 })
 
-document.getElementById('wholeScreen').addEventListener('touchend', evt => {
+document.getElementById('contentWrapper').addEventListener('touchend', evt => {
     evt.preventDefault();
+    dir = undefined;
     deltaX = touchEnd.clientX - touchStart.clientX;
     deltaY = touchEnd.clientY - touchStart.clientY;
     if(Math.abs(deltaX) > 2* Math.abs(deltaY)) {
@@ -196,6 +199,5 @@ document.getElementById('wholeScreen').addEventListener('touchend', evt => {
         if(deltaY > 0) dir = Keycode.DOWN;
         else dir = Keycode.UP;
     }
-    console.log(dir);
-    playGame(dir);
+    if(dir) playGame(dir);
 })
