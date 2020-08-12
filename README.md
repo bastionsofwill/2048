@@ -3,7 +3,7 @@
 
 ## Description
 
-GitHub Pages URL: https://bastions-of-will.github.io/2048
+GitHub Pages URL: https://bastionsofwill.github.io/2048
 
 OR
 
